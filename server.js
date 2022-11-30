@@ -11,6 +11,8 @@ const app = express()
 app.set('views', __dirname + '/views')
 app.set('view engine', 'jsx')
 app.engine('jsx', require('express-react-views').createEngine())
+// Added CSS
+app.use(express.static('public'))
 
 // ROUTES
 app.get('/', (req, res) => {
@@ -20,6 +22,11 @@ app.get('/', (req, res) => {
 // BREADS CONTROLLER ROUTE
 const breadsController = require('./controllers/breads_controller')
 app.use('/breads', breadsController)
+
+// 404 Page MUST BE LAST OR WILL CATCH ALL ROUTES UNDERNEATH
+app.get('*', (req, res) => {
+    res.send('404')
+})
 
 // LISTEN
 app.listen(PORT, () => [
