@@ -13,6 +13,8 @@ app.set('view engine', 'jsx')
 app.engine('jsx', require('express-react-views').createEngine())
 // Added CSS
 app.use(express.static('public'))
+// change urlencoded string into an object
+app.use(express.urlencoded({extended: true}))
 
 // ROUTES
 app.get('/', (req, res) => {
