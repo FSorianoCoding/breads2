@@ -25,7 +25,7 @@ app.use('/breads', breadsController)
 
 // 404 Page MUST BE LAST OR WILL CATCH ALL ROUTES UNDERNEATH
 app.get('*', (req, res) => {
-    res.send('404')
+    res.render('error404')
 })
 
 // LISTEN
