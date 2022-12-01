@@ -1,16 +1,17 @@
 const express = require('express')
+const bread = require('../models/bread')
 const breads = express.Router()
 const Bread = require('../models/bread')
 
 // INDEX
 breads.get('/', (req, res) => {
+    // res.send(Bread)
     res.render('index',
         {
             breads: Bread,
             title: 'Index Page'
         }
-    )
-    // res.send(Bread)
+    )    
 })
 
 // NEW
@@ -18,16 +19,35 @@ breads.get('/new', (req, res) => {
     res.render('new')
 })
 
+// EDIT
+breads.get('/:index/edit', (req, res) => {
+    res.render('edit', {
+        bread: Bread[req.params.index],
+        index: req.params.index
+    })
+})
+
 // SHOW
 breads.get('/:index', (req, res) => {
     if (Bread[req.params.index]) {
         res.render('Show', {
             bread: Bread[req.params.index],
-            index: req.params.index,
+            index: req.params.index
         })
     } else {
         res.render('error404')
     }
+})
+
+// UPDATE
+breads.put('/:index', (req, res) => {
+    if (req.body.hasGluten === 'on') {
+        req.body.hasGluten = true
+    } else {
+        req.body.hasGluten = false
+    }
+    Bread[req.params.index] = req.body
+    res.redirect(`/breads/${req.params.index}`)
 })
 
 // CREATE
