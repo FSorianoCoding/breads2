@@ -1,5 +1,7 @@
 // DEPENDENCIES
 const express = require('express')
+// Added so we can DELETE
+const methodOverride = require('method-override')
 
 // CONFIGURATION
 require('dotenv').config()
@@ -15,6 +17,8 @@ app.engine('jsx', require('express-react-views').createEngine())
 app.use(express.static('public'))
 // change urlencoded string into an object
 app.use(express.urlencoded({extended: true}))
+// For using DELETE action
+app.use(methodOverride('_method'))
 
 // ROUTES
 app.get('/', (req, res) => {

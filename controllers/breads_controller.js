@@ -19,11 +19,11 @@ breads.get('/new', (req, res) => {
 })
 
 // SHOW
-breads.get('/:id', (req, res) => {
-    // res.send(Bread[req.params.arrayIndex])
-   if (Bread[req.params.id]) {
+breads.get('/:index', (req, res) => {
+    if (Bread[req.params.index]) {
         res.render('Show', {
-            bread: Bread[req.params.id]
+            bread: Bread[req.params.index],
+            index: req.params.index,
         })
     } else {
         res.render('error404')
@@ -41,9 +41,14 @@ breads.post('/', (req, res) => {
         req.body.hasGluten = false
     }
     Bread.push(req.body)
-    res.render('/breads')
+    res.redirect('/breads')
 })
 
+// DELETE
+breads.delete('/:index', (req, res) => {
+    Bread.splice(req.params.index, 1)
+    res.status(303).redirect('/breads')
+})
 
 // EXPORT
 module.exports = breads
