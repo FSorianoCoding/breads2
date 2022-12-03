@@ -87,6 +87,9 @@ breads.post('/', (req, res) => {
     // Bread.push(req.body)
     // .create() used to create the bread document object req.body.
     Bread.create(req.body)
+    .catch(err => {
+        res.send('404')
+    })
     res.redirect('/breads')
 })
 

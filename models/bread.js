@@ -5,10 +5,14 @@ const { Schema } = mongoose
 
 // Define our Schema using the Schema constructor and name it a variable
 const breadSchema = new Schema({
-  // We will write our schema here
-  name: { type: String, required: true },
-  hasGluten: Boolean,
-  image: { type: String, default: 'https://place-puppy.com/300x300' }
+    // We will write our schema here
+    name: { type: String, required: true },
+    hasGluten: Boolean,
+    image: { type: String, default: 'https://place-puppy.com/300x300' },
+    baker: {
+        type: String,
+        enum: ['Rachel', 'Monica', 'Joey', 'Chandler', 'Ross', 'Phoebe']
+    }
 })
 
 // Create a model under schema to use schema
