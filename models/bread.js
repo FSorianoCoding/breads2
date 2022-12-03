@@ -15,6 +15,13 @@ const breadSchema = new Schema({
     }
 })
 
+// Helper method 
+// Instance instead of static because only need it when a
+// document is called, not for the entire collection at once.
+breadSchema.methods.getBakedBy = function() {
+    return `${this.name} was baked with love by ${this.baker}`
+}
+
 // Create a model under schema to use schema
 // Conventionally the variable should be capitalized.
 // mongoose.model is a method that creates a model for us to pass arguments
@@ -22,7 +29,7 @@ const breadSchema = new Schema({
 // First argument passed is the name of the collection.
 // Second argument is the schema model we want to use.
 const Bread = mongoose.model('Bread', breadSchema)
-
+  
 // Export the MODEL not the SCHEMA
 module.exports = Bread
 
