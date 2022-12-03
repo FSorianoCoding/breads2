@@ -2,6 +2,8 @@
 const express = require('express')
 // Added so we can DELETE
 const methodOverride = require('method-override')
+// Added npm i mongoose
+const mongoose = require('mongoose')
 
 // CONFIGURATION
 require('dotenv').config()
@@ -19,6 +21,10 @@ app.use(express.static('public'))
 app.use(express.urlencoded({extended: true}))
 // For using DELETE action
 app.use(methodOverride('_method'))
+// connect mongo to middleware
+mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true},
+    () => { console.log('connected to mongo: ', process.env.MONGO_URI) }
+)
 
 // ROUTES
 app.get('/', (req, res) => {

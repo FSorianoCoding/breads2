@@ -11,7 +11,8 @@ function Index ({breads, title}) {
                     breads.map((bread, index) => {
                         return (
                             <li key={index}>
-                                <a href={`/breads/${index}`}>
+                                {/* needs to be written as _id per error. */}
+                                <a href={`/breads/${bread._id}`}>
                                     {bread.name}
                                 </a>
                             </li>

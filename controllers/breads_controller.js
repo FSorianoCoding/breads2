@@ -6,12 +6,16 @@ const Bread = require('../models/bread')
 // INDEX
 breads.get('/', (req, res) => {
     // res.send(Bread)
-    res.render('index',
-        {
-            breads: Bread,
-            title: 'Index Page'
-        }
-    )    
+    // use .find() method with no objects passed through to get all breads for index view.
+    Bread.find()
+        // use .then() and pass callback functions because .find() is returning a promise.
+        .then(foundBreads => {
+            // console.log(foundBreads)
+            res.render('index', {
+                breads: foundBreads,
+                title: 'Index Page'
+            })    
+        })
 })
 
 // NEW
@@ -19,24 +23,37 @@ breads.get('/new', (req, res) => {
     res.render('new')
 })
 
-// EDIT
-breads.get('/:index/edit', (req, res) => {
-    res.render('edit', {
-        bread: Bread[req.params.index],
-        index: req.params.index
-    })
-})
-
 // SHOW
 breads.get('/:index', (req, res) => {
-    if (Bread[req.params.index]) {
-        res.render('Show', {
-            bread: Bread[req.params.index],
-            index: req.params.index
+    // if (Bread[req.params.index]) {
+    //     res.render('Show', {
+    //         bread: Bread[req.params.index],
+    //         index: req.params.index
+    //     })
+    // } else {
+    //     res.render('error404')
+    // }
+    Bread.findById(req.params.index)
+        .then(foundBread => {
+            res.render('show', {
+                bread: foundBread
+            })
         })
-    } else {
-        res.render('error404')
-    }
+        .catch(err => {
+            res.send('404')
+        })
+})
+
+// EDIT
+breads.get('/:index/edit', (req, res) => {
+    Bread.findById(req.params.index)
+        .then(foundBread => {
+            res.render('edit', {                
+                // bread: Bread[req.params.index],
+                // index: req.params.index
+                bread: foundBread
+            })
+    })
 })
 
 // UPDATE
@@ -46,28 +63,40 @@ breads.put('/:index', (req, res) => {
     } else {
         req.body.hasGluten = false
     }
-    Bread[req.params.index] = req.body
-    res.redirect(`/breads/${req.params.index}`)
+    // Bread[req.params.index] = req.body
+    // need { new: true } on updated mongodb find() method.
+    Bread.findByIdAndUpdate(req.params.index, req.body, { new: true })
+        .then(updatedBread => {
+            console.log(updatedBread)
+            res.redirect(`/breads/${req.params.index}`)
+        })
 })
 
 // CREATE
 breads.post('/', (req, res) => {
     if (!req.body.image) {
-        req.body.image = 'https://images.unsplash.com/photo-1517686469429-8bdb88b9f907?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80'
+        // req.body.image = 'https://images.unsplash.com/photo-1517686469429-8bdb88b9f907?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80'
+        // our Schema handles putting in default pic.
+        req.body.image = undefined
     }
     if (req.body.hasGluten === 'on') {
         req.body.hasGluten = true
     } else {
         req.body.hasGluten = false
     }
-    Bread.push(req.body)
+    // Bread.push(req.body)
+    // .create() used to create the bread document object req.body.
+    Bread.create(req.body)
     res.redirect('/breads')
 })
 
 // DELETE
 breads.delete('/:index', (req, res) => {
-    Bread.splice(req.params.index, 1)
-    res.status(303).redirect('/breads')
+    // Bread.splice(req.params.index, 1)
+    Bread.findByIdAndDelete(req.params.index)
+        .then(deletedBread => {
+            res.status(303).redirect('/breads')
+        })
 })
 
 // EXPORT
