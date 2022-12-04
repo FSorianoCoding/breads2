@@ -35,6 +35,10 @@ app.get('/', (req, res) => {
 const breadsController = require('./controllers/breads_controller')
 app.use('/breads', breadsController)
 
+// BAKERS CONTROLLER
+const bakersController = require('./controllers/bakers_controller')
+app.use('/bakers', bakersController)
+
 // 404 Page MUST BE LAST OR WILL CATCH ALL ROUTES UNDERNEATH
 app.get('*', (req, res) => {
     res.render('error404')

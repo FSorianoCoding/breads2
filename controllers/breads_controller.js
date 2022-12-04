@@ -1,26 +1,35 @@
 const express = require('express')
-const bread = require('../models/bread')
 const breads = express.Router()
 const Bread = require('../models/bread')
+const Baker = require('../models/baker')
 
 // INDEX
 breads.get('/', (req, res) => {
     // res.send(Bread)
     // use .find() method with no objects passed through to get all breads for index view.
-    Bread.find()
-        // use .then() and pass callback functions because .find() is returning a promise.
-        .then(foundBreads => {
-            // console.log(foundBreads)
-            res.render('index', {
-                breads: foundBreads,
-                title: 'Index Page'
-            })    
+    Baker.find()
+        .then(foundBakers => {
+            Bread.find()
+                // use .then() and pass callback functions because .find() is returning a promise.
+                .then(foundBreads => {
+                    // console.log(foundBreads)
+                    res.render('index', {
+                        breads: foundBreads,
+                        bakers: foundBakers,
+                        title: 'Index Page'
+                    })    
+                })
         })
 })
 
 // NEW
 breads.get('/new', (req, res) => {
-    res.render('new')
+    Baker.find()
+        .then(foundBakers => {
+            res.render('new', {
+                bakers: foundBakers
+            })
+        })
 })
 
 // SHOW
@@ -34,9 +43,10 @@ breads.get('/:index', (req, res) => {
     //     res.render('error404')
     // }
     Bread.findById(req.params.index)
+        .populate('baker')
         .then(foundBread => {
-            const bakedBy = foundBread.getBakedBy()
-            console.log(bakedBy)
+            // const bakedBy = foundBread.getBakedBy()
+            // console.log(bakedBy)
             res.render('show', {
                 bread: foundBread
             })
@@ -48,12 +58,16 @@ breads.get('/:index', (req, res) => {
 
 // EDIT
 breads.get('/:index/edit', (req, res) => {
-    Bread.findById(req.params.index)
-        .then(foundBread => {
-            res.render('edit', {                
-                // bread: Bread[req.params.index],
-                // index: req.params.index
-                bread: foundBread
+    Baker.find()
+    .then(foundBakers => {
+        Bread.findById(req.params.index)
+            .then(foundBread => {
+                res.render('edit', {                
+                    // bread: Bread[req.params.index],
+                    // index: req.params.index
+                    bread: foundBread,
+                    bakers: foundBakers
+                })
             })
     })
 })
@@ -89,9 +103,6 @@ breads.post('/', (req, res) => {
     // Bread.push(req.body)
     // .create() used to create the bread document object req.body.
     Bread.create(req.body)
-    .catch(err => {
-        res.send('404')
-    })
     res.redirect('/breads')
 })
 

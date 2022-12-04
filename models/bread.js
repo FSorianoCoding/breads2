@@ -10,8 +10,10 @@ const breadSchema = new Schema({
     hasGluten: Boolean,
     image: { type: String, default: 'https://place-puppy.com/300x300' },
     baker: {
-        type: String,
-        enum: ['Rachel', 'Monica', 'Joey', 'Chandler', 'Ross', 'Phoebe']
+        // type: String,
+        // enum: ['Rachel', 'Monica', 'Joey', 'Chandler', 'Ross', 'Phoebe']        
+        type: Schema.Types.ObjectID,
+        ref: 'Baker'
     }
 })
 
@@ -19,7 +21,7 @@ const breadSchema = new Schema({
 // Instance instead of static because only need it when a
 // document is called, not for the entire collection at once.
 breadSchema.methods.getBakedBy = function() {
-    return `${this.name} was baked with love by ${this.baker}`
+    return `${this.name} was baked with love by ${this.baker.name}, who has been with us since ${this.baker.startDate.getFullYear()}.`
 }
 
 // Create a model under schema to use schema
